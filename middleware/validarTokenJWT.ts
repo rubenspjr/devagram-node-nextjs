@@ -39,7 +39,7 @@ export const validarTokenJWT = (handler : NextApiHandler) =>
 
         } catch (e){
             console.log(e)
-            return res.status(401).json({erro : 'Nao foi possivel validar o token de acessoaaaa'});
+            return res.status(401).json({erro : 'Nao foi possivel validar o token de acesso'});
         }        
         
            return handler(req, res); 
