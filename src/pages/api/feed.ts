@@ -1,0 +1,40 @@
+import type {NextApiRequest, NextApiResponse} from 'next';
+import type {respostaPadraoMsg} from '../../../types/respostaPadraoMsg';
+import {conectarMongoDB} from '../../../middleware/conectarMongoDB';
+import {validarTokenJWT} from '../../../middleware/validarTokenJWT'
+import { usuarioModels } from '../../../models/usuarioModels';
+import { publicacaoModels } from '../../../models/publicacaoModels';
+
+
+const feedEndpoint = async (req : NextApiRequest, res : NextApiResponse <respostaPadraoMsg | any >) => {
+    try {
+        if (req.method === 'GET'){
+            //receber uma informaçao do id do usuario que 
+            //que eu quero buscar o feed
+            //onde vem essa informaçao
+            //quando usar body e query
+            //tudo quer for consulta é no [query] é tudo que envio de informçao e no [body]
+
+            if(req?.query?.id){
+                // agora que tenho o id do usuario
+                // como eu valido se um usuario é valido
+                const usuario = await usuarioModels.findById(req?.query?.id);
+                if(!usuario){
+                    return res.status(400).json({erro : 'Usuario não encontrado'});
+                }
+                //e como eu busco as publicaçoes dele ?
+                const publicacoes = await publicacaoModels.find({idUsuario : usuario._id}).sort({data : -1});
+
+                    return res.status(200).json(publicacoes);
+            }
+
+        }
+        return res.status(400).json({erro : 'Metedo informado nao é valido'})
+
+    } catch (e) {
+        console.log(e);
+            return res.status(400).json({erro : 'Nao foi possivel obter o feed'})
+    }
+}
+
+export default validarTokenJWT(conectarMongoDB(feedEndpoint))
