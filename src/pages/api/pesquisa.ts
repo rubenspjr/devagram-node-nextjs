@@ -3,6 +3,7 @@ import type {respostaPadraoMsg} from '../../../types/respostaPadraoMsg'
 import { validarTokenJWT } from '../../../middleware/validarTokenJWT';
 import { conectarMongoDB } from '../../../middleware/conectarMongoDB';
 import { usuarioModels } from '../../../models/usuarioModels';
+import { politicaCORS } from '../../../middleware/politicaCORS';
 
 
 const pesquisaEndpoint
@@ -45,4 +46,4 @@ const pesquisaEndpoint
             return res.status(500).json({erro : 'Nao foi possivel buscarusuarios'+ e})
     }
 }
-export default validarTokenJWT(conectarMongoDB(pesquisaEndpoint));
+export default politicaCORS(validarTokenJWT(conectarMongoDB(pesquisaEndpoint)));

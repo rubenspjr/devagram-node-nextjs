@@ -4,6 +4,7 @@ import { conectarMongoDB } from '../../../middleware/conectarMongoDB';
 import { validarTokenJWT } from '../../../middleware/validarTokenJWT';
 import { usuarioModels } from '../../../models/usuarioModels';
 import { seguidorModels } from '../../../models/seguidorMoldels';
+import { politicaCORS } from '../../../middleware/politicaCORS';
 
 const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse <respostaPadraoMsg | any>) => {
     try {
@@ -67,4 +68,4 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse <respost
         return res.status(500).json({erro : 'Nao foi possivel seguir deseguir o usuario informado'});
     }
 }
-export default validarTokenJWT(conectarMongoDB(endpointSeguir));
+export default politicaCORS (validarTokenJWT(conectarMongoDB(endpointSeguir)));

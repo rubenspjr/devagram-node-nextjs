@@ -6,6 +6,7 @@ import {conectarMongoDB} from '../../../middleware/conectarMongoDB';
 import {validarTokenJWT} from '../../../middleware/validarTokenJWT';
 import {publicacaoModels} from '../../../models/publicacaoModels';
 import {usuarioModels} from '../../../models/usuarioModels';
+import { politicaCORS } from '../../../middleware/politicaCORS';
 
 
 
@@ -58,4 +59,4 @@ export const config = {
     }
 
 }
-export default validarTokenJWT(conectarMongoDB(handler));
+export default politicaCORS (validarTokenJWT(conectarMongoDB(handler)));
