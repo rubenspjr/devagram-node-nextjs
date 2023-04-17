@@ -4,6 +4,7 @@ import {conectarMongoDB} from '../../../middleware/conectarMongoDB';
 import {validarTokenJWT} from '../../../middleware/validarTokenJWT'
 import { usuarioModels } from '../../../models/usuarioModels';
 import { publicacaoModels } from '../../../models/publicacaoModels';
+import { seguidorModels } from '../../../models/seguidorMoldels';
 
 
 const feedEndpoint = async (req : NextApiRequest, res : NextApiResponse <respostaPadraoMsg | any >) => {
@@ -27,7 +28,36 @@ const feedEndpoint = async (req : NextApiRequest, res : NextApiResponse <respost
 
                     return res.status(200).json(publicacoes);
             }
+            else{
+                const {userId} = req.query;
+                const usuarioLogado = await usuarioModels.findById(userId);
+                if(!usuarioLogado){
+                    return res.status(400).json({erro : 'Usuario nao encontrado'})
+                }
+                const seguidores = await seguidorModels.find({usuarioId : usuarioLogado._id});
+                const seguidoresIds = seguidores.map(s =>s.usuarioSeguidoId);
 
+                const publicacoes = await publicacaoModels.find ({
+                    $or : [
+                        { idUsuario : usuarioLogado._id},
+                        { idUsuario : seguidoresIds}
+                        
+                    ]
+                })
+                .sort({data :-1}); // -1 faz as publis ficarem da ultima para primeira e +1 da primeira postada para a ultima
+                const result = [];
+                for (const publicacao of publicacoes){
+                    const usuarioDaPublicacao = await usuarioModels.findById(publicacao.idUsuario);
+                    if (usuarioDaPublicacao){
+                        const final = {... publicacao._doc, usuario :{
+                            nome : usuarioDaPublicacao.nome,
+                            avatar : usuarioDaPublicacao.avatar
+                        }};
+                        result.push(final);
+                    }
+                }
+                return res.status(200).json(result)
+            }
         }
         return res.status(400).json({erro : 'Metedo informado nao é valido'})
 
