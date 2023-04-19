@@ -22,7 +22,7 @@ import { politicaCORS } from '../../../middleware/politicaCORS';
                 return res.status(400).json({erro : 'Usuario não encontrado'})
             }
 
-            const {nome} = req.body;
+            const {nome} = req?.body;
             if (nome && nome.length > 2) {
                 usuario.nome = nome;
             }
@@ -43,7 +43,7 @@ import { politicaCORS } from '../../../middleware/politicaCORS';
 
         } catch (e) {
             console.log(e);
-            return res.status(400).json({erro : 'Nao foi possivel atualizar usuario' + e});
+            return res.status(500).json({erro : 'Nao foi possivel atualizar usuario' + e});
         }
 
     })
