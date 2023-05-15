@@ -5,6 +5,7 @@ const usuarioSchema = new Schema({
     email: {type : String, required : true},
     senha: {type : String, required :true},
     avatar : {type : String, required : false},
+    segueUsuario : {type: String,required : true}
     seguidores : {type : Number, default : 0 },
     seguindo : { type : Number, default : 0},
     publicacoes : {type : Number, default : 0}
