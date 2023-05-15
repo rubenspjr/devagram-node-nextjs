@@ -27,7 +27,20 @@ const feedEndpoint = async (req : NextApiRequest, res : NextApiResponse <respost
                 //e como eu busco as publicaçoes dele ?
                 const publicacoes = await publicacaoModels.find({idUsuario : usuario._id}).sort({data : -1});
 
-                    return res.status(200).json(publicacoes);
+                const result = []
+                for (const publicacao of publicacoes){
+                    const usuarioDaPublicacao = await usuarioModels.findById(publicacao.idUsuario);
+                    if(usuarioDaPublicacao){
+                        const final = {
+                            ...publicacao._doc,
+                            usuario : usuarioDaPublicacao.nome,
+                            avatar: usuarioDaPublicacao.avatar,
+                        };
+                        result.push(final);
+                    }
+                }
+
+                    return res.status(200).json(result);
             }
             else{
                 const {userId} = req.query;
